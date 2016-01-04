@@ -1,4 +1,3 @@
 ## Valley Inversion in Aspen
 This plot was generated using the [Colorado Avalanche Information Center](http://avalanche.state.co.us)'s weather observation network for Aspen, Colorado. 
 
-<iframe id="igraph" scrolling="no" style="border:none;"seamless="seamless" src="https://plot.ly/~tony.cannistra/158.embed" height="525px" width="100%"></iframe>

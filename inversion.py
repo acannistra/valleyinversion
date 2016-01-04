@@ -7,6 +7,7 @@ import plotly.plotly as plt
 import plotly.graph_objs as graphobjs
 from numpy import array
 from scipy.stats import linregress
+import datetime
 
 def is_number(x):
 	try:
@@ -30,7 +31,6 @@ weather_stations  = [dict(zip(table_header, [cell.text for cell in row.find_all(
 ## massage data into usable format
 ### get rows with actual temperature information
 weather_stations  = [(int(row["Elev"]), int(row["Temp"]), row["Station"]) for row in weather_stations if is_number(row["Temp"])]
-print weather_stations[0]
 weather_stations  = sorted(weather_stations, lambda e,t: e[0], reverse=True)
 
 ## calculate line of best fit
@@ -39,6 +39,8 @@ slope, intercept, r_value, p_value, std_err = linregress(elevs, temps)
 fit_line = slope*array(elevs)+intercept
 
 ## plot traces
+slope_per_thousand_ft = slope*1000
+
 temp_trace = graphobjs.Scatter(x = elevs,
 							   y = temps,
 							   mode = 'markers',
@@ -48,15 +50,16 @@ best_fit_trace = graphobjs.Scatter(x = elevs,
 								  y = fit_line,
 								  mode = "lines",
 								  name = "Best Fit Line (r-value: "+str(r_value)+")",
-								  text = "Slope: "+str(slope)+" degrees/ft")
+								  text = "Slope: "+str(slope_per_thousand_ft)+" degrees/ thousand ft")
 
 ## make plot
 data = [temp_trace, best_fit_trace]
-layout = graphobjs.Layout(title = "Valley Inversion", 
+time = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
+layout = graphobjs.Layout(title = "Valley Inversion at "+time, 
 						 yaxis = graphobjs.YAxis(title="Temperature (°F)"),
 						 xaxis = graphobjs.XAxis(title="Elevation (ft.)"))
 figure = graphobjs.Figure(data=data, layout=layout)
 plot = plt.iplot(figure, filename="Valley Inversion")
 
-print plot.resource
+print plot.embed_code
 
