@@ -10,6 +10,7 @@ pandoc index.md -o index.html
 
 echo "created index.html"
 
-git add *
-git commit -am "updated page on "$(date)
+git checkout gh-pages
+git add index.html
+git commit -m "updated page on ""$(date)"
 git push origin gh-pages
