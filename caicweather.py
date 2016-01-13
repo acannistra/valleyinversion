@@ -14,7 +14,12 @@ class CAICWeather(object):
 		start_date = datetime.strptime(start_date, input_format)
 		end_date   = datetime.strptime(end_date, input_format)
 
+		## warn if lots of hours:
+		if (end_date - start_date).days > 7:
+			print "WARNING: more than a week of weather requested."
+
 		required_format = "%Y-%m-%d-%H"
+		readable_format = "%Y-%m-%d-%r"
 		current = start_date
 		urls = []
 		while current != end_date + timedelta(hours=1):
@@ -22,6 +27,7 @@ class CAICWeather(object):
 			url = CAIC_WEATHER_BASEURL % url_date
 			urls.append((current, url))
 			current = current + timedelta(hours=1)
+			if self.verbose: print "WEATHER: Generated url " + url
 
 		return urls
 
@@ -35,6 +41,7 @@ class CAICWeather(object):
 
 
 	def get_stations(self, url, region):
+		if self.verbose: print "WEATHER: Accessing " + url
 		raw_page = requests.get(url)
 		parser = BeautifulSoup(raw_page.text, "html.parser")
 
@@ -53,10 +60,12 @@ class CAICWeather(object):
 		for hour, data in self.hourly_weather.iteritems():
 			new_data = [row for row in data if row["Station"] in stations ]
 			new_weather.append((hour, new_data))
+
 		return dict(new_weather)
 
-	def __init__(self, region, start_date, end_date):
+	def __init__(self, region, start_date, end_date, verbose=False):
 		super(CAICWeather, self).__init__()
+		self.verbose = verbose
 		urls = self.generate_urls(start_date, end_date)
 		self.hourly_weather = { date[0] : self.get_stations(date[1], region) for date in urls } 
 		self.stations       = self.get_station_info(self.hourly_weather.values()[0])
