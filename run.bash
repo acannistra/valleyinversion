@@ -6,6 +6,7 @@ DATE=$(TZ=America/Denver date +"%m/%d/%Y-%H")
 
 python inversion_paired.py $PREV $DATE Aspen --stations "ASPEN/SARDY FIEL" "ASPEN SKI AREA - GE" --image "images/now.png"
 
+git pull origin gh-pages
 git add images/now.png
 git commit -am "added new image on $DATE"
 git push origin gh-pages
