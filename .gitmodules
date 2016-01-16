@@ -1,3 +1,3 @@
 [submodule "python-metar"]
 	path = python-metar
-	url = git@github.com:tomp/python-metar.git
+	url = https://github.com/tomp/python-metar.git 
